@@ -2,3 +2,4 @@ discord
 requests
 python-dotenv
 Pillow
+google-cloud-vision

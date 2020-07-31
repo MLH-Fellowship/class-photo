@@ -5,7 +5,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 from dotenv import load_dotenv
-from . import photo
+from . import face
 
 bot = commands.Bot('-cp')
 
@@ -20,7 +20,7 @@ async def on_ready():
     urls = await get_photos()
     await bot.get_channel(int(os.getenv("CHANNEL"))).send("Photos downloaded!")
     await bot.logout()
-    photo.crop(urls)
+    face.crop(urls)
 
 
 async def get_photos():
