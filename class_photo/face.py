@@ -2,6 +2,7 @@ import os
 from google.cloud import vision
 from google.cloud.vision import types
 from PIL import Image, ImageDraw
+from . import collage
 
 def crop(imgs):
     try:
@@ -9,16 +10,19 @@ def crop(imgs):
     except FileExistsError:
         pass        
     print("Cropping...")
-    
+    img_filenames = []
     for index, img in enumerate(imgs):
         print(img)
         with open(f"img/discord/{img[1]}.jpg", 'rb') as image:
             faces = detect_face(image)
             print(f"Found {len(faces)} face{'' if len(faces) == 1 else 's'}")
             output_filename = f"img/cropped/{index}.jpg"
+            img_filenames.append(output_filename)
             print(f'Writing to file {output_filename}')
             image.seek(0)
             highlight_faces(image, faces, output_filename)
+
+    collage.make_collage(img_filenames)
 
 def detect_face(face_file, max_results=4):
     client = vision.ImageAnnotatorClient()
@@ -50,8 +54,8 @@ def highlight_faces(image, faces, output_filename):
             width = height + 50
 
         left = box[0][0] - 50
-        bottom = box[0][1] - 50
+        bottom = box[0][1] + 50
 
-    box2 = (left,bottom,left+width,bottom+height)
+    box2 = (left,bottom,left+width,bottom+height+50)
     im2 = im.crop(box2)
     im2.save(output_filename)

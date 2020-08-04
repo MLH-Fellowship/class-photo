@@ -16,9 +16,7 @@ def main():
 @bot.event
 async def on_ready():
     print('Bot Online!')
-    await bot.get_channel(int(os.getenv("CHANNEL"))).send("Download photos...")
     urls = await get_photos()
-    await bot.get_channel(int(os.getenv("CHANNEL"))).send("Photos downloaded!")
     await bot.logout()
     face.crop(urls)
 
