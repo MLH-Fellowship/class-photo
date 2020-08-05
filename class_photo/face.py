@@ -12,12 +12,10 @@ def crop(imgs):
     print("Cropping...")
     img_filenames = []
     for index, img in enumerate(imgs):
-        print(img)
         with open(f"img/discord/{img[1]}.jpg", 'rb') as image:
             faces = detect_face(image)
             output_filename = f"img/cropped/{index}.jpg"
             img_filenames.append(output_filename)
-            print(f'Writing to file {output_filename}')
             image.seek(0)
             highlight_faces(image, faces, output_filename)
 
@@ -32,10 +30,7 @@ def detect_face(face_file, max_results=4):
 
 def highlight_faces(image, faces, output_filename):
     im = Image.open(image)
-    draw = ImageDraw.Draw(im)
     left = 0
-    top = 0
-    right = 0
     bottom = 0
     for face in faces:
         box = [(vertex.x, vertex.y)
@@ -43,7 +38,6 @@ def highlight_faces(image, faces, output_filename):
         width = abs(box[1][0] - box[0][0]) + 50
         height = abs(box[2][1] - box [0][1]) + 50
         diff = abs(width - height)
-        print(f"Box: {box}")
         if width >= height:
             height = width + 50
         else:
@@ -55,5 +49,4 @@ def highlight_faces(image, faces, output_filename):
     box2 = (left,bottom,left+width,bottom+height+50)
     new_im = im.crop(box2)
     new_im = new_im.resize((1000,1000), Image.ANTIALIAS)
-    new_im.thumbnail((1000, 1000), Image.ANTIALIAS)
     new_im.save(output_filename)

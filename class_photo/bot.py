@@ -43,8 +43,6 @@ async def get_all_urls():
     return urls
 
 async def save_photo(url):
-    print(f'Download & process {url[0]}')
-
     try:
         response = requests.get(url[0], timeout=5)
         try:
@@ -57,7 +55,6 @@ async def save_photo(url):
             image = Image.open(BytesIO(response.content))
             image = rotate_if_exif_specifies(image)
             image.convert('RGB').save(f"img/discord/{url[1]}.jpg", optimize=True)
-            print(f"Saved photo as {url[1]}.jpg")
 
         except requests.HTTPError:
             print('HTTP error')
@@ -70,7 +67,6 @@ def rotate_if_exif_specifies(image):
         exif_tags = image._getexif()
         if exif_tags is None:
             # No EXIF tags, so we don't need to rotate
-            print('No EXIF data, so not transforming')
             return image
 
         value = exif_tags[274]
@@ -96,7 +92,6 @@ def rotate_if_exif_specifies(image):
         print(f'EXIF rotation \'{value}\' unknown, not transforming')
         return image
 
-    print(f'EXIF rotation \'{value}\' detected, rotating {angle} degrees, flip: {flip}')
     if angle != 0:
         image = image.rotate(angle)
 

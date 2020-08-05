@@ -4,8 +4,8 @@ import math
 def make_collage(imgs):
     print("Start creating collage...")
     
-    cols = int(math.sqrt(len(imgs)))
-    rows = math.ceil(len(imgs) / cols)
+    rows = int(math.sqrt(len(imgs)))
+    cols = math.ceil(len(imgs) / rows)
     index = len(imgs)
     while (cols * rows) > len(imgs):
         padded_img = Image.new('RGB', (910, 512), (30, 83, 159))
