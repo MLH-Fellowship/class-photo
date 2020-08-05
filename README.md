@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 Fill out `.env` with the fields in `example.env`.
 
-## Run
+## Run
 
 ```
 python -m class_photo
