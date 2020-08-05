@@ -15,7 +15,6 @@ def crop(imgs):
         print(img)
         with open(f"img/discord/{img[1]}.jpg", 'rb') as image:
             faces = detect_face(image)
-            print(f"Found {len(faces)} face{'' if len(faces) == 1 else 's'}")
             output_filename = f"img/cropped/{index}.jpg"
             img_filenames.append(output_filename)
             print(f'Writing to file {output_filename}')
@@ -45,9 +44,6 @@ def highlight_faces(image, faces, output_filename):
         height = abs(box[2][1] - box [0][1]) + 50
         diff = abs(width - height)
         print(f"Box: {box}")
-        print(f"Width: {width}")
-        print(f"Height: {height}")
-        print(f"Difference: {diff}")
         if width >= height:
             height = width + 50
         else:
@@ -57,5 +53,7 @@ def highlight_faces(image, faces, output_filename):
         bottom = box[0][1] + 50
 
     box2 = (left,bottom,left+width,bottom+height+50)
-    im2 = im.crop(box2)
-    im2.save(output_filename)
+    new_im = im.crop(box2)
+    new_im = new_im.resize((1000,1000), Image.ANTIALIAS)
+    new_im.thumbnail((1000, 1000), Image.ANTIALIAS)
+    new_im.save(output_filename)

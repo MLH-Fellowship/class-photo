@@ -1,17 +1,26 @@
 from PIL import Image
+import math
 
 def make_collage(imgs):
     print("Start creating collage...")
-    width = 1920
-    height = 1080
-    # work out based on number of images
-    cols = 6
-    rows = 4
+    
+    cols = int(math.sqrt(len(imgs)))
+    rows = math.ceil(len(imgs) / cols)
+    index = len(imgs)
+    while (cols * rows) > len(imgs):
+        padded_img = Image.new('RGB', (910, 512), (30, 83, 159))
+        index += 1
+        output_filename = f"img/cropped/{index}.jpg"
+        padded_img.seek(0)
+        padded_img.save(output_filename)
+        imgs.append(output_filename)
 
+    width = 1000 * cols
+    height = 1000 * rows
     thumbnail_width = width//cols
     thumbnail_height = height//rows
     size = thumbnail_width, thumbnail_height
-    new_image = Image.new('RGB', (width, height))
+    new_image = Image.new('RGB', (width, height), (30, 83, 159))
     images = []
     for p in imgs:
         im = Image.open(p)
@@ -22,7 +31,6 @@ def make_collage(imgs):
     y = 0
     for col in range(cols):
         for row in range(rows):
-            print(i, x ,y)
             new_image.paste(images[i], (x, y))
             i += 1
             y += thumbnail_height
