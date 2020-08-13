@@ -32,6 +32,8 @@ def highlight_faces(image, faces, output_filename):
     im = Image.open(image)
     left = 0
     bottom = 0
+    width = 0
+    height = 0
     for face in faces:
         box = [(vertex.x, vertex.y)
                for vertex in face.bounding_poly.vertices]
