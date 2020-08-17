@@ -20,7 +20,6 @@ async def on_ready():
     await bot.logout()
     face.crop(urls)
 
-
 async def get_photos():
 
     urls = await get_all_urls()

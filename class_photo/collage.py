@@ -8,9 +8,9 @@ def make_collage(imgs):
     cols = math.ceil(len(imgs) / rows)
     index = len(imgs)
     while (cols * rows) > len(imgs):
-        padded_img = Image.new('RGB', (910, 512), (30, 83, 159))
-        index += 1
+        padded_img = Image.new('RGB', (1000, 1000), (30, 83, 159))
         output_filename = f"img/cropped/{index}.jpg"
+        index += 1
         padded_img.seek(0)
         padded_img.save(output_filename)
         imgs.append(output_filename)
