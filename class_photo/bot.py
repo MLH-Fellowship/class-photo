@@ -17,8 +17,8 @@ def main():
 async def on_ready():
     print('Bot Online!')
     urls = await get_photos()
-    await bot.logout()
     face.crop(urls)
+    await bot.logout()
 
 async def get_photos():
 
