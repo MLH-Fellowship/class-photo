@@ -14,10 +14,6 @@ def get_locations(dir):
 
 if __name__ == "__main__":
     load_dotenv()
-    try:
-        os.mkdir("img")
-    except:
-        print("Directory already exists! Overwriting existing photos.")
 
     if len(sys.argv) == 2:
         if sys.argv[1] == "--bot":

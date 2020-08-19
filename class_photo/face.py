@@ -7,8 +7,10 @@ from . import collage
 def crop(imgs):
     try:
         os.mkdir("img/cropped")
+        print("Created cropped directory!")
     except FileExistsError:
-        pass        
+        print("cropped directory already exists! Overwriting existing photos.")
+
     print("Cropping...")
     img_filenames = []
     for index, img in enumerate(imgs):

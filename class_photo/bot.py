@@ -9,7 +9,6 @@ from . import face
 
 bot = commands.Bot('-cp')
 
-
 def main():
     bot.run(os.getenv("TOKEN"))
 
@@ -19,11 +18,22 @@ async def on_ready():
     await get_photos()
     await bot.logout()
 
-async def get_photos():
-
+async def get_photos():   
     urls = await get_all_urls()
     print(f"Collected {len(urls)} photo urls in total")
-    imgs_location = []
+    
+    try:
+        os.mkdir("img")
+        print("Created img directory!")
+    except FileExistsError:
+        print("img directory already exists!")
+
+    try:
+        os.mkdir("img/discord")
+        print("Created discord directory!")
+    except FileExistsError:
+        print("discord directory already exists! Overwriting existing photos.")
+
     for index, url in enumerate(urls):
         await save_photo(index, url)
 
@@ -43,10 +53,6 @@ async def save_photo(index, url):
     try:
         response = requests.get(url[0], timeout=5)
         try:
-            try:
-                os.mkdir("img/discord")
-            except FileExistsError:
-                pass
             response.raise_for_status()
             image = Image.open(BytesIO(response.content))
             image = rotate_if_exif_specifies(image)
