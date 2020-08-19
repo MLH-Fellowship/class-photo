@@ -14,6 +14,11 @@ def get_locations(dir):
 
 if __name__ == "__main__":
     load_dotenv()
+    try:
+        os.mkdir("img")
+    except:
+        print("Directory already exists! Overwriting existing photos.")
+
     if len(sys.argv) == 2:
         if sys.argv[1] == "--bot":
             bot.main()
@@ -32,3 +37,5 @@ if __name__ == "__main__":
             face.crop(discord_locations)
             cropped_locations = get_locations("img/cropped")
             collage.make_collage(cropped_locations)
+    else:
+        print("Wrong arguments. Consult the README for more information. Only 1 argument at a time.")
