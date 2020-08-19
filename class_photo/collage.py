@@ -4,9 +4,23 @@ import math
 def make_collage(imgs):
     print("Start creating collage...")
     
-    rows = int(math.sqrt(len(imgs)))
-    cols = math.ceil(len(imgs) / rows)
     index = len(imgs)
+    rows = int(math.sqrt(index))
+    cols = math.ceil(index / rows)
+    remainder = (rows * cols) - index
+
+    cols_test = cols + 1
+    rows_test = math.ceil(index / cols_test)
+    remainder_test = (rows_test * cols_test) - index
+    
+    while remainder_test < remainder:
+        cols = cols_test
+        rows = rows_test
+        remainder = (rows * cols) - index
+        cols_test = cols + 1
+        rows_test = math.ceil(index / cols_test)
+        remainder_test = (rows_test * cols_test) - index
+
     while (cols * rows) > len(imgs):
         padded_img = Image.new('RGB', (1000, 1000), (30, 83, 159))
         output_filename = f"img/cropped/{index}.jpg"

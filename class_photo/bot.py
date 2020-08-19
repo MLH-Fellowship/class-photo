@@ -34,7 +34,7 @@ async def get_photos():
 async def get_all_urls():
     urls = []
     selfie_channel = bot.get_channel(int(os.getenv("CHANNEL")))
-    messages = await selfie_channel.history(limit=200).flatten()
+    messages = await selfie_channel.history(limit=1000).flatten()
 
     for message in messages:
         if len(message.attachments) > 0:
