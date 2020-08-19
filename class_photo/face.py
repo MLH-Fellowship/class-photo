@@ -17,7 +17,7 @@ def crop(imgs):
             output_filename = f"img/cropped/{index}.jpg"
             img_filenames.append(output_filename)
             image.seek(0)
-            highlight_faces(image, faces, output_filename)
+            crop_faces(image, faces, output_filename)
 
     collage.make_collage(img_filenames)
 
@@ -28,27 +28,54 @@ def detect_face(face_file, max_results=4):
     return client.face_detection(
         image=image, max_results=max_results).face_annotations
 
-def highlight_faces(image, faces, output_filename):
+def crop_faces(image, faces, output_filename):
     im = Image.open(image)
+
+    im_width = im.size[0]
+    im_height = im.size[1]
+
     left = 0
+    right = 0
+    top = 0
     bottom = 0
-    width = 0
-    height = 0
+
     for face in faces:
-        box = [(vertex.x, vertex.y)
-               for vertex in face.bounding_poly.vertices]
-        width = abs(box[1][0] - box[0][0]) + 50
-        height = abs(box[2][1] - box [0][1]) + 50
-        diff = abs(width - height)
-        if width >= height:
-            height = width + 50
-        else:
-            width = height + 50
+        box = [(vertex.x, vertex.y) for vertex in face.bounding_poly.vertices]
+        
+    centre = int((box[0][0] + box[1][0])/2)
+    middle = int((box[0][1] + box[2][1])/2)
+    width = abs(box[1][0] - box[0][0]) + (0.1 * im_width)
+    height = abs(box[2][1] - box [0][1]) + (0.1 * im_height)
 
-        left = box[0][0] - 50
-        bottom = box[0][1] + 50
+    if (max(width, height) < im_width) & (max(width, height) < im_height):
+        distance = int(max(width, height)/2)
+    elif (min(width, height) < im_width) & (min(width, height) < im_height):
+        distance = int(min(width, height)/2)
+    else:
+        distance = int(min(im_width, im_height)/2)
+    
+    left = centre - distance
+    right = centre + distance
+    top = middle - distance
+    bottom = middle + distance
 
-    box2 = (left,bottom,left+width,bottom+height+50)
+    if left < 0:
+        right -= left
+        left = 0
+    
+    if right > im_width:
+        left -= (right - im_width)
+        right = im_width
+    
+    if top < 0:
+        bottom -= top
+        top = 0
+    
+    if bottom > im_height:
+        top -= (bottom - im_height)
+        bottom = im_height
+
+    box2 = (left,top,right,bottom)
     new_im = im.crop(box2)
     new_im = new_im.resize((1000,1000), Image.ANTIALIAS)
     new_im.save(output_filename)
