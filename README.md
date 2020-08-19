@@ -11,6 +11,8 @@ pip install -r requirements.txt
 
 Fill out `.env` with the fields in `example.env`.
 
+Make sure you have a service account for using the Google Cloud Vision API. Instructions [here](https://cloud.google.com/vision/docs/libraries#client-libraries-install-python).
+
 ## Run
 
 There's 3 stages:
