@@ -10,26 +10,34 @@ from . import face
 bot = commands.Bot('-cp')
 
 def main():
-    load_dotenv()
     bot.run(os.getenv("TOKEN"))
 
 @bot.event
 async def on_ready():
     print('Bot Online!')
-    urls = await get_photos()
-    face.crop(urls)
+    await get_photos()
     await bot.logout()
 
-async def get_photos():
-
+async def get_photos():   
     urls = await get_all_urls()
     print(f"Collected {len(urls)} photo urls in total")
+    
+    try:
+        os.mkdir("img")
+        print("Created img directory!")
+    except FileExistsError:
+        print("img directory already exists!")
 
-    for url in urls:
-        await save_photo(url)
+    try:
+        os.mkdir("img/discord")
+        print("Created discord directory!")
+    except FileExistsError:
+        print("discord directory already exists! Overwriting existing photos.")
+
+    for index, url in enumerate(urls):
+        await save_photo(index, url)
 
     print(f"Saved all {len(urls)} photos!")
-    return urls
 
 async def get_all_urls():
     urls = []
@@ -41,19 +49,14 @@ async def get_all_urls():
             urls.append((message.attachments[0].url, message.id))
     return urls
 
-async def save_photo(url):
+async def save_photo(index, url):
     try:
         response = requests.get(url[0], timeout=5)
         try:
-            try:
-                os.mkdir("img")
-                os.mkdir("img/discord")
-            except FileExistsError:
-                pass
             response.raise_for_status()
             image = Image.open(BytesIO(response.content))
             image = rotate_if_exif_specifies(image)
-            image.convert('RGB').save(f"img/discord/{url[1]}.jpg", optimize=True)
+            image.convert('RGB').save(f"img/discord/{index}.jpg", optimize=True)
 
         except requests.HTTPError:
             print('HTTP error')

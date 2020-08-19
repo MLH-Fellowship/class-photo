@@ -22,15 +22,15 @@ def make_collage(imgs):
         remainder_test = (rows_test * cols_test) - index
 
     while (cols * rows) > len(imgs):
-        padded_img = Image.new('RGB', (1000, 1000), (30, 83, 159))
+        padded_img = Image.new('RGB', (200, 200), (30, 83, 159))
         output_filename = f"img/cropped/{index}.jpg"
         index += 1
         padded_img.seek(0)
         padded_img.save(output_filename)
         imgs.append(output_filename)
 
-    width = 1000 * cols
-    height = 1000 * rows
+    width = 200 * cols
+    height = 200 * rows
     thumbnail_width = width//cols
     thumbnail_height = height//rows
     size = thumbnail_width, thumbnail_height
