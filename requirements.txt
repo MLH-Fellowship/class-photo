@@ -2,4 +2,4 @@ discord
 requests
 python-dotenv
 Pillow
-google-cloud-vision
+google-cloud-vision==1.0.0
