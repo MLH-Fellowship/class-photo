@@ -1,16 +1,17 @@
-import discord
 from discord.ext import commands
 import os
 from PIL import Image
 import requests
 from io import BytesIO
 from dotenv import load_dotenv
-from . import face
+import face
 
 bot = commands.Bot('-cp')
 
+
 def main():
     bot.run(os.getenv("TOKEN"))
+
 
 @bot.event
 async def on_ready():
@@ -18,26 +19,22 @@ async def on_ready():
     await get_photos()
     await bot.logout()
 
-async def get_photos():   
+
+async def get_photos():
     urls = await get_all_urls()
     print(f"Collected {len(urls)} photo urls in total")
-    
-    try:
-        os.mkdir("img")
-        print("Created img directory!")
-    except FileExistsError:
-        print("img directory already exists!")
 
     try:
-        os.mkdir("img/discord")
-        print("Created discord directory!")
-    except FileExistsError:
-        print("discord directory already exists! Overwriting existing photos.")
+        os.makedirs("img/discord")
+    except:
+        print("img/discord/ directory already exists!\
+              Overwriting existing photos.")
 
     for index, url in enumerate(urls):
         await save_photo(index, url)
 
     print(f"Saved all {len(urls)} photos!")
+
 
 async def get_all_urls():
     urls = []
@@ -49,20 +46,21 @@ async def get_all_urls():
             urls.append((message.attachments[0].url, message.id))
     return urls
 
+
 async def save_photo(index, url):
     try:
         response = requests.get(url[0], timeout=5)
-        try:
-            response.raise_for_status()
-            image = Image.open(BytesIO(response.content))
-            image = rotate_if_exif_specifies(image)
-            image.convert('RGB').save(f"img/discord/{index}.jpg", optimize=True)
+        response.raise_for_status()
+        image = Image.open(BytesIO(response.content))
+        image = rotate_if_exif_specifies(image)
+        image.convert('RGB').save(f"img/discord/{index}.jpg", optimize=True)
 
-        except requests.HTTPError:
-            print('HTTP error')
+    except requests.HTTPError:
+        print('HTTP error')
 
     except requests.exceptions.ConnectionError:
         print('Network error')
+
 
 def rotate_if_exif_specifies(image):
     try:
