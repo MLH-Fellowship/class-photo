@@ -19,7 +19,7 @@ async def on_ready():
     await bot.logout()
 
 async def get_photos():   
-    urls = await get_all_urls()
+    photo_messages = await get_all_photo_messages()
     print(f"Collected {len(urls)} photo urls in total")
     
     try:
@@ -34,20 +34,25 @@ async def get_photos():
     except FileExistsError:
         print("discord directory already exists! Overwriting existing photos.")
 
-    for index, url in enumerate(urls):
+    # Save only the latest photo from each user
+    users = {}
+    for message in photo_messages:
+        users[message.author] = message.attachments[0].url
+
+    for index, url in enumerate(users.values()):
         await save_photo(index, url)
 
     print(f"Saved all {len(urls)} photos!")
 
-async def get_all_urls():
-    urls = []
+async def get_all_photo_messages():
+    photo_messages = []
     selfie_channel = bot.get_channel(int(os.getenv("CHANNEL")))
-    messages = await selfie_channel.history(limit=1000).flatten()
+    all_messages = await selfie_channel.history(limit=1000).flatten()
 
-    for message in messages:
+    for message in all_messages:
         if len(message.attachments) > 0:
-            urls.append((message.attachments[0].url, message.id))
-    return urls
+            photo_messages.append(message)
+    return photo_messages
 
 async def save_photo(index, url):
     try:
