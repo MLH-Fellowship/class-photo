@@ -19,7 +19,11 @@ def crop(imgs):
             output_filename = f"img/cropped/{index}.jpg"
             img_filenames.append(output_filename)
             image.seek(0)
-            crop_faces(image, faces, output_filename)
+            try:
+                crop_faces(image, faces, output_filename)
+            except:
+                im = Image.open(image)
+                im.save(output_filename)
 
 def detect_face(face_file, max_results=4):
     client = vision.ImageAnnotatorClient()
