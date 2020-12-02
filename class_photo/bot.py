@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 import os
 from PIL import Image
@@ -9,8 +8,10 @@ from . import face
 
 bot = commands.Bot('-cp')
 
+
 def main():
     bot.run(os.getenv("TOKEN"))
+
 
 @bot.event
 async def on_ready():
@@ -18,21 +19,16 @@ async def on_ready():
     await get_photos()
     await bot.logout()
 
+
 async def get_photos():   
     photo_messages = await get_all_photo_messages()
-    print(f"Collected {len(urls)} photo urls in total")
-    
-    try:
-        os.mkdir("img")
-        print("Created img directory!")
-    except FileExistsError:
-        print("img directory already exists!")
+    print(f"Collected {len(photo_messages)} photo urls in total")
 
     try:
-        os.mkdir("img/discord")
-        print("Created discord directory!")
-    except FileExistsError:
-        print("discord directory already exists! Overwriting existing photos.")
+        os.makedirs("img/discord")
+    except:
+        print("img/discord/ directory already exists!\
+              Overwriting existing photos.")
 
     # Save only the latest photo from each user
     users = {}
@@ -42,7 +38,8 @@ async def get_photos():
     for index, url in enumerate(users.values()):
         await save_photo(index, url)
 
-    print(f"Saved all {len(urls)} photos!")
+    print(f"Saved all {len(users)} photos!")
+
 
 async def get_all_photo_messages():
     photo_messages = []
@@ -54,20 +51,21 @@ async def get_all_photo_messages():
             photo_messages.append(message)
     return photo_messages
 
+
 async def save_photo(index, url):
     try:
-        response = requests.get(url[0], timeout=5)
-        try:
-            response.raise_for_status()
-            image = Image.open(BytesIO(response.content))
-            image = rotate_if_exif_specifies(image)
-            image.convert('RGB').save(f"img/discord/{index}.jpg", optimize=True)
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        image = Image.open(BytesIO(response.content))
+        image = rotate_if_exif_specifies(image)
+        image.convert('RGB').save(f"img/discord/{index}.jpg", optimize=True)
 
-        except requests.HTTPError:
-            print('HTTP error')
+    except requests.HTTPError:
+        print('HTTP error')
 
     except requests.exceptions.ConnectionError:
         print('Network error')
+
 
 def rotate_if_exif_specifies(image):
     try:
