@@ -1,26 +1,30 @@
 from PIL import Image
 import math
+import os
 
 def make_collage(imgs):
     print("Start creating collage...")
     
-    index = len(imgs)
-    rows = int(math.sqrt(index))
-    cols = math.ceil(index / rows)
-    remainder = (rows * cols) - index
+    length = len(imgs)
+    index = length - 1
+    rows = int(math.sqrt(length))
+    cols = math.ceil(length / rows)
+    remainder = (rows * cols) - length
 
     cols_test = cols + 1
-    rows_test = math.ceil(index / cols_test)
-    remainder_test = (rows_test * cols_test) - index
-    
+    rows_test = math.ceil(length / cols_test)
+    remainder_test = (rows_test * cols_test) - length
+
     while remainder_test < remainder:
         cols = cols_test
         rows = rows_test
-        remainder = (rows * cols) - index
+        remainder = (rows * cols) - length
         cols_test = cols + 1
-        rows_test = math.ceil(index / cols_test)
-        remainder_test = (rows_test * cols_test) - index
+        rows_test = math.ceil(length / cols_test)
+        remainder_test = (rows_test * cols_test) - length
 
+    # Add padding photos
+    padding_start = len(imgs) - 1
     while (cols * rows) > len(imgs):
         padded_img = Image.new('RGB', (200, 200), (30, 83, 159))
         output_filename = f"img/cropped/{index}.jpg"
@@ -28,7 +32,7 @@ def make_collage(imgs):
         padded_img.seek(0)
         padded_img.save(output_filename)
         imgs.append(output_filename)
-
+    
     width = 200 * cols
     height = 200 * rows
     thumbnail_width = width//cols
@@ -52,3 +56,11 @@ def make_collage(imgs):
         y = 0
 
     new_image.save("img/collage.jpg")
+
+    # delete padding
+    padding_imgs = len(imgs) - padding_start - 1
+    print(padding_imgs)
+    for filename_index in range(padding_imgs):
+        print(filename_index)
+        print(padding_start)
+        os.remove(f"img/cropped/{padding_start + filename_index}.jpg")
