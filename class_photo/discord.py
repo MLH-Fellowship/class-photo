@@ -17,7 +17,7 @@ def main():
 async def on_ready():
     print('Bot Online!')
     await get_photos()
-    await bot.logout()
+    await bot.close()
 
 
 async def get_photos():   
@@ -59,6 +59,7 @@ async def save_photo(index, url):
         image = Image.open(BytesIO(response.content))
         image = rotate_if_exif_specifies(image)
         image.convert('RGB').save(f"img/discord/{index}.jpg", optimize=True)
+        print(f'Saved {index}.jpg')
 
     except requests.HTTPError:
         print('HTTP error')

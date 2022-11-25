@@ -1,8 +1,7 @@
 import os
 from google.cloud import vision
 from google.cloud.vision import types
-from PIL import Image, ImageDraw
-from . import collage
+from PIL import Image
 
 def crop(imgs):
     try:
@@ -25,7 +24,7 @@ def crop(imgs):
                 im = Image.open(image)
                 im.save(output_filename)
 
-def detect_face(face_file, max_results=4):
+def detect_face(face_file, max_results=1):
     client = vision.ImageAnnotatorClient()
     content = face_file.read()
     image = types.Image(content=content)

@@ -22,7 +22,7 @@ There's 3 stages:
 
 For downloading only
 ```
-python -m class_photo --bot
+python -m class_photo --discord
 ```
 
 For cropping only

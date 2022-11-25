@@ -33,6 +33,8 @@ def make_collage(imgs):
         padded_img.save(output_filename)
         imgs.append(output_filename)
     
+    cols = int(os.getenv("COLUMNS"))
+    rows = int(os.getenv("ROWS"))
     width = 200 * cols
     height = 200 * rows
     thumbnail_width = width//cols

@@ -131,5 +131,6 @@ dmypy.json
 creds.json
 *.zip
 img/
-pre-img/
 .DS_Store
+*-img/
+22.*/

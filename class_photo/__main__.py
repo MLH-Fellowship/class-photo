@@ -1,7 +1,7 @@
 import os
 import sys
 from dotenv import load_dotenv
-from . import bot
+from . import discord
 from . import face
 from . import collage
 
@@ -16,8 +16,8 @@ if __name__ == "__main__":
     load_dotenv()
 
     if len(sys.argv) == 2:
-        if sys.argv[1] == "--bot":
-            bot.main()
+        if sys.argv[1] == "--discord":
+            discord.main()
 
         elif sys.argv[1] == "--crop":
             locations = get_locations("img/discord")
@@ -28,7 +28,7 @@ if __name__ == "__main__":
             collage.make_collage(locations)
 
         elif sys.argv[1] == "--all":
-            bot.main()
+            discord.main()
             discord_locations = get_locations("img/discord")
             face.crop(discord_locations)
             cropped_locations = get_locations("img/cropped")
