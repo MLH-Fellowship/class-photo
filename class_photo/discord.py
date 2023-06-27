@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 import os
 from PIL import Image
@@ -6,7 +7,11 @@ from io import BytesIO
 from dotenv import load_dotenv
 from . import face
 
-bot = commands.Bot('-cp')
+intents = discord.Intents.default()  # Create an instance of Intents
+intents.typing = False  # Modify the intent properties as needed
+intents.presences = False
+
+bot = commands.Bot(command_prefix='-cp', intents=intents)
 
 
 def main():
